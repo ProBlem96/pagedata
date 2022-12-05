@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+ 
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+ 
+<body>
+     <!-- GUI -->
+     username<input id="username">
+     email<input id="email">
+    <button onclick="addData()">Add data</button>
+    <div id="display"></div>
+    <script src="https://unpkg.com/axios@1.1.2/dist/axios.min.js"></script>
+    <script>
+        const MY_SERVER ="https://jsonplaceholder.typicode.com/users" //json place holder
+        // const MY_SERVER = "http://localhost:3000/products/" // fake json server
+        // const MY_SERVER ="http://localhost:5000/students" //my flask python
+ 
+        const loadData = async () => {
+            // get (READ)
+            const res = await axios.get(MY_SERVER) //get data from server
+            display.innerHTML = res.data.map(names => `
+            <h1>
+            <button onclick='updName(${names.id})'>update</button>
+            <button onclick='delName(${names.id})'>${names.id}</button>
+            username: ${names.username} , email: ${names.email}</h1><hr>`).join("") //build display
+            console.log(res.data) //display data  in console
+        }
+ 
+        loadData()
+ 
+        // post (Create)
+        const addData = () => {
+            axios.post(MY_SERVER, { username: username.value, email: email.value}).then((res) => console.log(res.data))
+        }
+ 
+        //delete (delete)
+        const delName = (id) => {
+            console.log(id)
+            axios.delete(MY_SERVER + id).then((res) => console.log(res.data))
+        }
+ 
+        const updName =async (id) => {
+            // put (update)
+            await axios.put(MY_SERVER + id,{ username: username.value, email: email.value}).then((res))
+            loadData()
+        }
+    </script>
+</body>
+</html>
